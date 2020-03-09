@@ -54,6 +54,7 @@ int config_host_data(char const *name, char **hostname,
 {
     gchar *h = NULL, *s = NULL, *p = NULL;
     bool single_packet;
+    GError *error = NULL;
     return_if_true(config == NULL, -1);
 
     if (!g_key_file_has_group(config, name)) {
@@ -78,8 +79,8 @@ int config_host_data(char const *name, char **hostname,
     }
 
     single_packet = g_key_file_get_boolean(config, name,
-                                           CONFIG_KEY_SINGLE_PACKET, NULL);
-    *single_packet_mode = (single_packet == TRUE);
+                                           CONFIG_KEY_SINGLE_PACKET, &error);
+    *single_packet_mode = (single_packet == TRUE || error != NULL);
 
     if (service) {
         *service = strdup(s);
